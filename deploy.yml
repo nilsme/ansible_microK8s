@@ -57,4 +57,4 @@
           groups=docker,microk8s
           append=yes
   - name: Start microk8s services
-    ansible.builtin.shell:  microk8s enable dashboard dns registry portainer
+    ansible.builtin.shell: microk8s enable dashboard dns registry portainer
