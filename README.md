@@ -53,5 +53,5 @@ sudo apt-get install iptables-persistent
 ```
 
 ```Shell script
-microk8s enable ha-cluster dashboard dns registry portainer
+microk8s enable ha-cluster dashboard dns registry portainer prometheus
 ```
