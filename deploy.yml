@@ -9,6 +9,7 @@
       name: "{{ my_ansible_user }}"
       shell: /bin/bash
       groups: sudo
+      state: present
     register: user_created
   - name: Set authorized key for user ansible by copying it from current user
     ansible.posix.authorized_key:
@@ -28,7 +29,7 @@
     when: sshd.changed
   - name: install packages
     action: > 
-      {{ ansible_pkg_mgr }} name=docker,apt-transport-https,ca-certificates,curl,software-properties-common,python3-pip,virtualenv,python3-setuptools state=present update_cache=yes 
+      {{ ansible_pkg_mgr }} name=containerd,apt-transport-https,ca-certificates,curl,software-properties-common,python3-pip,virtualenv,python3-setuptools state=present update_cache=yes 
   - name: Add Docker GPG apt Key
     apt_key:
       url: https://download.docker.com/linux/ubuntu/gpg
@@ -38,14 +39,15 @@
       repo: deb https://download.docker.com/linux/ubuntu bionic stable
       state: present
   - name: Update apt and install docker-ce
-    apt: update_cache=yes name=docker-ce state=latest
+    apt: update_cache=yes name=docker-ce state=present
   - name: Install Docker Module for Python
     pip:
       name: docker
+      state: present
   - name: Start docker service
     systemd:
-      state: started
       name: docker
+      state: started
   - name: Install microk8s snap
     snap:
       name=microk8s
@@ -57,4 +59,4 @@
           groups=docker,microk8s
           append=yes
   - name: Start microk8s services
-    ansible.builtin.shell: microk8s enable dashboard dns registry portainer
+    ansible.builtin.shell: microk8s enable ha-cluster dashboard dns registry portainer

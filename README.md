@@ -44,3 +44,14 @@ microk8s dashboard-proxy
 
 Portainer service is started by ansible. It can be accessed under
 `http://<node_ip>:30777`.
+
+## Troubleshooting
+
+```Shell script
+sudo iptables -P FORWARD ACCEPT
+sudo apt-get install iptables-persistent
+```
+
+```Shell script
+microk8s enable ha-cluster dashboard dns registry portainer
+```
