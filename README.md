@@ -45,6 +45,28 @@ microk8s dashboard-proxy
 Portainer service is started by ansible. It can be accessed under
 `http://<node_ip>:30777`.
 
+## Built-in registry
+
+Docs: <https://docs.docker.com/registry/spec/api/>
+
+### List repositories in built-in registry
+
+```Shell script
+http://<node_ip>:32000/v2/_catalog?n=10
+```
+
+### List images in repository
+
+```Shell script
+http://<node_ip>:32000/v2/<epositoryName>/tags/list?n=10
+```
+
+## Get kubeconfig
+
+```Shell script
+microk8s config
+```
+
 ## Troubleshooting
 
 ```Shell script
