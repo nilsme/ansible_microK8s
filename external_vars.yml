@@ -8,5 +8,6 @@ pkgs: docker,
   software-properties-common,
   python3-pip,
   virtualenv,
-  python3-setuptools
+  python3-setuptools,
+  nfs-common
 microk8s_services: dashboard dns registry portainer
