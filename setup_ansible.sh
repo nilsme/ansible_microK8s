@@ -5,7 +5,7 @@ if [ ! -d "$ANSIBLE" ]; then
   conda init bash
   source ~/.bash_profile
   source ~/.bashrc
-  conda create -y -n ansible python
+  conda create -y -n ansible python -c conda-forge
   conda activate ansible
   pip install ansible passlib 
 else

@@ -1,2 +1,12 @@
 ---
+ansible_user: ansible
 my_ansible_user: ansible
+pkgs: docker,
+  apt-transport-https,
+  ca-certificates,
+  curl,
+  software-properties-common,
+  python3-pip,
+  virtualenv,
+  python3-setuptools
+microk8s_services: dashboard dns registry portainer
