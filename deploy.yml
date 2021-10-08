@@ -4,11 +4,38 @@
   vars_files:
   - external_vars.yml
   tasks:
+
+  # install updates --------------------------------------------------------- #
   
+  - name: Update kernel packages first
+    apt:
+      name: 'kernel*'
+      state: latest
+      update_cache: yes
+      only_upgrade: yes
+    register: apt_update_kernel
+
+  - name: Update all installed packages
+    apt:
+      name: '*'
+      state: latest
+      update_cache: yes
+      only_upgrade: yes
+
+  - name: Remove packages not needed anymore
+    apt:
+      autoremove: yes
+
+
+  # install new packages ---------------------------------------------------- #
+
   - name: install packages
     action: > 
       {{ ansible_pkg_mgr }} name="{{ pkgs }}" state=present update_cache=yes 
-  
+
+
+  # configure docker -------------------------------------------------------- #
+
   - name: Add Docker GPG apt Key
     apt_key:
       url: https://download.docker.com/linux/ubuntu/gpg
@@ -38,7 +65,10 @@
     systemd:
       state: started
       name: docker
-  
+
+
+  # install microk8s -------------------------------------------------------- #
+
   - name: Install microk8s snap
     snap:
       name=microk8s
@@ -50,6 +80,9 @@
     ansible.builtin.shell: export LC_ALL=C.UTF-8 && \
       export LANG=C.UTF-8 && \
       microk8s enable "{{ microk8s_services }}"
+
+
+  # create and configure ansible user --------------------------------------- #
 
   - name: Create user account and add user to groups sudo, microk8s, docker
     ansible.builtin.user:
@@ -69,6 +102,9 @@
       validate: 'visudo -cf %s'
     when: user_created.changed
 
+
+  # configure ssh ----------------------------------------------------------- #
+
   - name: Set authorized key for user ansible by copying it from current user
     ansible.posix.authorized_key:
       user: "{{ my_ansible_user }}"
@@ -87,3 +123,11 @@
       name: sshd
       state: restarted
     when: sshd.changed
+
+
+  # reboot after kernel update or microk8s installation --------------------- #
+
+  - name: Reboot when kernel packages were updated or microk8s installed
+    reboot:
+      post_reboot_delay: 60
+    when: apt_update_kernel.changed or microk8s.changed
