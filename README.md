@@ -44,6 +44,12 @@ ansible-playbook -i hosts -e 'ansible_user=root' --ask-become-pass deploy.yml
 
 > Change `ansible_user` to a user with sudo rights on the host.
 
+### Shutdown all nodes
+
+```Shell script
+ansible-playbook -i hosts shutdown.yml
+```
+
 ### Updates
 
 ```Shell script
